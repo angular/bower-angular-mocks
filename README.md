@@ -1,4 +1,4 @@
-bower-angular-mocks
-===================
+bower-angular-mocks (unstable)
+==============================
 
-angular-mocks.js bower repo
+Bower package for the unstable branch of angular-mocks.
