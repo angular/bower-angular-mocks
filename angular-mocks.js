@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.10-build.2171+sha.79e519f
+ * @license AngularJS v1.2.10-build.2172+sha.ec59be6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -386,7 +386,7 @@ angular.mock.$LogProvider = function() {
        *
        * @example
        * <pre>
-       * $log.log('Some Error');
+       * $log.error('Some Error');
        * var first = $log.error.logs.unshift();
        * </pre>
        */
