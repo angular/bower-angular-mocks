@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.12-build.2210+sha.e7ac7aa
+ * @license AngularJS v1.2.12-build.2211+sha.3bf4390
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -2132,7 +2132,7 @@ if(window.jasmine || window.mocha) {
   window.inject = angular.mock.inject = function() {
     var blockFns = Array.prototype.slice.call(arguments, 0);
     var errorForStack = new Error('Declaration Location');
-    return isSpecRunning() ? workFn() : workFn;
+    return isSpecRunning() ? workFn.call(currentSpec) : workFn;
     /////////////////////
     function workFn() {
       var modules = currentSpec.$modules || [];
