@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.12-build.2236+sha.84fd3a1
+ * @license AngularJS v1.2.12-build.2237+sha.d5c7ef0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -2102,7 +2102,7 @@ if(window.jasmine || window.mocha) {
   window.inject = angular.mock.inject = function() {
     var blockFns = Array.prototype.slice.call(arguments, 0);
     var errorForStack = new Error('Declaration Location');
-    return isSpecRunning() ? workFn() : workFn;
+    return isSpecRunning() ? workFn.call(currentSpec) : workFn;
     /////////////////////
     function workFn() {
       var modules = currentSpec.$modules || [];
@@ -2115,8 +2115,9 @@ if(window.jasmine || window.mocha) {
       }
       for(var i = 0, ii = blockFns.length; i < ii; i++) {
         try {
-          // jasmine sets this to be the current spec, so we are mimicing that
-          injector.invoke(blockFns[i] || angular.noop, currentSpec);
+          /* jshint -W040 *//* Jasmine explicitly provides a `this` object when calling functions */
+          injector.invoke(blockFns[i] || angular.noop, this);
+          /* jshint +W040 */
         } catch (e) {
           if (e.stack && errorForStack) {
             throw new ErrorAddingDeclarationLocationStack(e, errorForStack);
