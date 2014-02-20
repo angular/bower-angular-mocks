@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2293+sha.39bae62
+ * @license AngularJS v1.2.14-build.2294+sha.6082e2a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -498,7 +498,17 @@ angular.mock.$IntervalProvider = function() {
       nextRepeatId++;
       return promise;
     };
-
+    /**
+     * @ngdoc method
+     * @name $interval#cancel
+     * @description
+     *
+     * Clears the interval.
+     *
+     * @param {promise} The promise of the interval to cancel.
+     *
+     * @return {boolean}
+     */
     $interval.cancel = function(promise) {
       if(!promise) return false;
       var fnIndex;
