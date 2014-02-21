@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2303+sha.0c9abc3
+ * @license AngularJS v1.2.14-build.2304+sha.2f45133
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -437,7 +437,7 @@ angular.mock.$LogProvider = function() {
  * @description
  * Mock implementation of the $interval service.
  *
- * Use {@link ngMock.$interval#methods_flush `$interval.flush(millis)`} to
+ * Use {@link ngMock.$interval#flush `$interval.flush(millis)`} to
  * move forward by `millis` milliseconds and trigger any functions scheduled to run in that
  * time.
  *
@@ -446,7 +446,7 @@ angular.mock.$LogProvider = function() {
  * @param {number=} [count=0] Number of times to repeat. If not set, or 0, will repeat
  *   indefinitely.
  * @param {boolean=} [invokeApply=true] If set to `false` skips model dirty checking, otherwise
- *   will invoke `fn` within the {@link ng.$rootScope.Scope#methods_$apply $apply} block.
+ *   will invoke `fn` within the {@link ng.$rootScope.Scope#$apply $apply} block.
  * @returns {promise} A promise which will be notified on each iteration.
  */
 angular.mock.$IntervalProvider = function() {
