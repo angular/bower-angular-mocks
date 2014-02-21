@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2302+sha.f827d64
+ * @license AngularJS v1.2.14-build.2303+sha.0c9abc3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -501,13 +501,12 @@ angular.mock.$IntervalProvider = function() {
     /**
      * @ngdoc method
      * @name $interval#cancel
+     *
      * @description
+     * Cancels a task associated with the `promise`.
      *
-     * Clears the interval.
-     *
-     * @param {promise} The promise of the interval to cancel.
-     *
-     * @return {boolean}
+     * @param {number} promise A promise from calling the `$interval` function.
+     * @returns {boolean} Returns `true` if the task was successfully cancelled.
      */
     $interval.cancel = function(promise) {
       if(!promise) return false;
