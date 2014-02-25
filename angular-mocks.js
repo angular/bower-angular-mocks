@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2318+sha.2cd87db
+ * @license AngularJS v1.2.14-build.2319+sha.4c4537e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -764,21 +764,24 @@ angular.mock.TzDate.prototype = Date.prototype;
 angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
 
   .config(['$provide', function($provide) {
-    var reflowQueue = [];
 
+    var reflowQueue = [];
     $provide.value('$$animateReflow', function(fn) {
+      var index = reflowQueue.length;
       reflowQueue.push(fn);
-      return angular.noop;
+      return function cancel() {
+        reflowQueue.splice(index, 1);
+      };
     });
 
-    $provide.decorator('$animate', function($delegate) {
+    $provide.decorator('$animate', function($delegate, $$asyncCallback) {
       var animate = {
         queue : [],
         enabled : $delegate.enabled,
+        triggerCallbacks : function() {
+          $$asyncCallback.flush();
+        },
         triggerReflow : function() {
-          if(reflowQueue.length === 0) {
-            throw new Error('No animation reflows present');
-          }
           angular.forEach(reflowQueue, function(fn) {
             fn();
           });
@@ -1663,6 +1666,48 @@ angular.mock.$TimeoutDecorator = function($delegate, $browser) {
   return $delegate;
 };
 
+angular.mock.$RAFDecorator = function($delegate) {
+  var queue = [];
+  var rafFn = function(fn) {
+    var index = queue.length;
+    queue.push(fn);
+    return function() {
+      queue.splice(index, 1);
+    };
+  };
+
+  rafFn.supported = $delegate.supported;
+
+  rafFn.flush = function() {
+    if(queue.length === 0) {
+      throw new Error('No rAF callbacks present');
+    }
+
+    var length = queue.length;
+    for(var i=0;i<length;i++) {
+      queue[i]();
+    }
+
+    queue = [];
+  };
+
+  return rafFn;
+};
+
+angular.mock.$AsyncCallbackDecorator = function($delegate) {
+  var callbacks = [];
+  var addFn = function(fn) {
+    callbacks.push(fn);
+  };
+  addFn.flush = function() {
+    angular.forEach(callbacks, function(fn) {
+      fn();
+    });
+    callbacks = [];
+  };
+  return addFn;
+};
+
 /**
  *
  */
@@ -1696,6 +1741,8 @@ angular.module('ngMock', ['ng']).provider({
   $rootElement: angular.mock.$RootElementProvider
 }).config(['$provide', function($provide) {
   $provide.decorator('$timeout', angular.mock.$TimeoutDecorator);
+  $provide.decorator('$$rAF', angular.mock.$RAFDecorator);
+  $provide.decorator('$$asyncCallback', angular.mock.$AsyncCallbackDecorator);
 }]);
 
 /**
