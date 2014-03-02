@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.15-build.2360+sha.6b18a56
+ * @license AngularJS v1.2.15-build.2361+sha.9bffccd
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -505,7 +505,7 @@ angular.mock.$IntervalProvider = function() {
      * @description
      * Cancels a task associated with the `promise`.
      *
-     * @param {number} promise A promise from calling the `$interval` function.
+     * @param {promise} promise A promise from calling the `$interval` function.
      * @returns {boolean} Returns `true` if the task was successfully cancelled.
      */
     $interval.cancel = function(promise) {
