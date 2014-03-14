@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2423+sha.a9a38d8
+ * @license AngularJS v1.3.0-build.2424+sha.79592ce
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1828,8 +1828,8 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  *    an array containing response status (number), response data (string) and response headers
  *    (Object).
  *  - passThrough – `{function()}` – Any request matching a backend definition with `passThrough`
- *    handler, will be pass through to the real backend (an XHR request will be made to the
- *    server.
+ *    handler will be passed through to the real backend (an XHR request will be made to the
+ *    server.)
  */
 
 /**
