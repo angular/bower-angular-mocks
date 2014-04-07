@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2584+sha.a8d4280
+ * @license AngularJS v1.3.0-build.2585+sha.f452416
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -2026,7 +2026,7 @@ if(window.jasmine || window.mocha) {
    * @param {...(string|Function|Object)} fns any number of modules which are represented as string
    *        aliases or as anonymous module initialization functions. The modules are used to
    *        configure the injector. The 'ng' and 'ngMock' modules are automatically loaded. If an
-   *        object literal is passed they will be register as values in the module, the key being
+   *        object literal is passed they will be registered as values in the module, the key being
    *        the module name and the value being what is returned.
    */
   window.module = angular.mock.module = function() {
