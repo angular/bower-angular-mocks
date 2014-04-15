@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.17-build.112+sha.db07ad2
+ * @license AngularJS v1.2.17-build.113+sha.373078a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -774,8 +774,7 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
       };
     });
 
-    $provide.decorator('$animate', ['$delegate', '$$asyncCallback',
-      function($delegate, $$asyncCallback) {
+    $provide.decorator('$animate', function($delegate, $$asyncCallback) {
       var animate = {
         queue : [],
         enabled : $delegate.enabled,
@@ -803,7 +802,7 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
       });
 
       return animate;
-    }]);
+    });
 
   }]);
 
@@ -1628,7 +1627,7 @@ function MockXhr() {
  * that adds a "flush" and "verifyNoPendingTasks" methods.
  */
 
-angular.mock.$TimeoutDecorator = ['$delegate', '$browser', function ($delegate, $browser) {
+angular.mock.$TimeoutDecorator = function($delegate, $browser) {
 
   /**
    * @ngdoc method
@@ -1667,9 +1666,9 @@ angular.mock.$TimeoutDecorator = ['$delegate', '$browser', function ($delegate, 
   }
 
   return $delegate;
-}];
+};
 
-angular.mock.$RAFDecorator = ['$delegate', function($delegate) {
+angular.mock.$RAFDecorator = function($delegate) {
   var queue = [];
   var rafFn = function(fn) {
     var index = queue.length;
@@ -1695,9 +1694,9 @@ angular.mock.$RAFDecorator = ['$delegate', function($delegate) {
   };
 
   return rafFn;
-}];
+};
 
-angular.mock.$AsyncCallbackDecorator = ['$delegate', function($delegate) {
+angular.mock.$AsyncCallbackDecorator = function($delegate) {
   var callbacks = [];
   var addFn = function(fn) {
     callbacks.push(fn);
@@ -1709,7 +1708,7 @@ angular.mock.$AsyncCallbackDecorator = ['$delegate', function($delegate) {
     callbacks = [];
   };
   return addFn;
-}];
+};
 
 /**
  *
@@ -2135,28 +2134,14 @@ if(window.jasmine || window.mocha) {
     /////////////////////
     function workFn() {
       var modules = currentSpec.$modules || [];
-      var strictDi = !!currentSpec.$injectorStrict;
+
       modules.unshift('ngMock');
       modules.unshift('ng');
       var injector = currentSpec.$injector;
       if (!injector) {
-        if (strictDi) {
-          // If strictDi is enabled, annotate the providerInjector blocks
-          angular.forEach(modules, function(moduleFn) {
-            if (typeof moduleFn === "function") {
-              angular.injector.$$annotate(moduleFn);
-            }
-          });
-        }
-        injector = currentSpec.$injector = angular.injector(modules, strictDi);
-        currentSpec.$injectorStrict = strictDi;
+        injector = currentSpec.$injector = angular.injector(modules);
       }
       for(var i = 0, ii = blockFns.length; i < ii; i++) {
-        if (currentSpec.$injectorStrict) {
-          // If the injector is strict / strictDi, and the spec wants to inject using automatic
-          // annotation, then annotate the function here.
-          injector.annotate(blockFns[i]);
-        }
         try {
           /* jshint -W040 *//* Jasmine explicitly provides a `this` object when calling functions */
           injector.invoke(blockFns[i] || angular.noop, this);
@@ -2168,22 +2153,6 @@ if(window.jasmine || window.mocha) {
           throw e;
         } finally {
           errorForStack = null;
-        }
-      }
-    }
-  };
-
-
-  angular.mock.inject.strictDi = function(value) {
-    value = arguments.length ? !!value : true;
-    return isSpecRunning() ? workFn() : workFn;
-
-    function workFn() {
-      if (value !== currentSpec.$injectorStrict) {
-        if (currentSpec.$injector) {
-          throw new Error('Injector already created, can not modify strict annotations');
-        } else {
-          currentSpec.$injectorStrict = value;
         }
       }
     }
