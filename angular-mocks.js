@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.17-build.187+sha.d4c3d5c
+ * @license AngularJS v1.2.17-build.188+sha.e7eab50
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1958,11 +1958,11 @@ if(window.jasmine || window.mocha) {
       };
 
 
-  beforeEach(function() {
+  (window.beforeEach || window.setup)(function() {
     currentSpec = this;
   });
 
-  afterEach(function() {
+  (window.afterEach || window.teardown)(function() {
     var injector = currentSpec.$injector;
 
     currentSpec.$injector = null;
