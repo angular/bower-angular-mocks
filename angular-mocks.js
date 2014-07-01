@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2863+sha.8252b8b
+ * @license AngularJS v1.3.0-build.2864+sha.ca75279
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -798,7 +798,7 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
             element : arguments[0],
             args : arguments
           });
-          $delegate[method].apply($delegate, arguments);
+          return $delegate[method].apply($delegate, arguments);
         };
       });
 
