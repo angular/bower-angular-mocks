@@ -30,7 +30,7 @@ The mocks are then available at `bower_components/angular-mocks/angular-mocks.js
 ## Documentation
 
 Documentation is available on the
-[AngularJS docs site](http://docs.angularjs.org/guide/dev_guide.unit-testing).
+[AngularJS docs site](https://docs.angularjs.org/guide/unit-testing).
 
 ## License
 
