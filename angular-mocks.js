@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.21-build.329+sha.65f40d2
+ * @license AngularJS v1.2.21-build.330+sha.25eb9b7
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1722,6 +1722,7 @@ angular.mock.$RootElementProvider = function() {
 /**
  * @ngdoc module
  * @name ngMock
+ * @packageName angular-mocks
  * @description
  *
  * # ngMock
@@ -1751,6 +1752,7 @@ angular.module('ngMock', ['ng']).provider({
  * @ngdoc module
  * @name ngMockE2E
  * @module ngMockE2E
+ * @packageName angular-mocks
  * @description
  *
  * The `ngMockE2E` is an angular module which contains mocks suitable for end-to-end testing.
