@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3097+sha.ffbd276
+ * @license AngularJS v1.3.0-build.3098+sha.1a2caad
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -2008,28 +2008,6 @@ angular.mock.e2e.$httpBackendDecorator =
   ['$rootScope', '$delegate', '$browser', createHttpBackendMock];
 
 
-angular.mock.clearDataCache = function() {
-  // jQuery 2.x doesn't expose data attached to elements. We could use jQuery.cleanData
-  // to clean up after elements but we'd first need to know which elements to clean up after.
-  // Skip it then.
-  if (window.jQuery) {
-    return;
-  }
-
-  var key,
-      cache = angular.element.cache;
-
-  for(key in cache) {
-    if (Object.prototype.hasOwnProperty.call(cache,key)) {
-      var handle = cache[key].handle;
-
-      handle && angular.element(handle.elem).off();
-      delete cache[key];
-    }
-  }
-};
-
-
 if(window.jasmine || window.mocha) {
 
   var currentSpec = null,
@@ -2059,8 +2037,6 @@ if(window.jasmine || window.mocha) {
       injector.get('$rootElement').off();
       injector.get('$browser').pollFns.length = 0;
     }
-
-    angular.mock.clearDataCache();
 
     // clean up jquery's fragment cache
     angular.forEach(angular.element.fragments, function(val, key) {
