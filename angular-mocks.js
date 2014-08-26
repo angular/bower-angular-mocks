@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3112+sha.2f4437b
+ * @license AngularJS v1.3.0-build.3113+sha.23da614
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -774,13 +774,21 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
       };
     });
 
-    $provide.decorator('$animate', ['$delegate', '$$asyncCallback',
-      function($delegate, $$asyncCallback) {
+    $provide.decorator('$animate', ['$delegate', '$$asyncCallback', '$timeout', '$browser',
+                            function($delegate,   $$asyncCallback,   $timeout,   $browser) {
       var animate = {
         queue : [],
+        cancel : $delegate.cancel,
         enabled : $delegate.enabled,
-        triggerCallbacks : function() {
+        triggerCallbackEvents : function() {
           $$asyncCallback.flush();
+        },
+        triggerCallbackPromise : function() {
+          $timeout.flush(0);
+        },
+        triggerCallbacks : function() {
+          this.triggerCallbackEvents();
+          this.triggerCallbackPromise();
         },
         triggerReflow : function() {
           angular.forEach(reflowQueue, function(fn) {
