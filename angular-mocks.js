@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3376+sha.d5445c6
+ * @license AngularJS v1.3.0-build.3377+sha.0d3b69a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -816,6 +816,7 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
           animate.queue.push({
             event : method,
             element : arguments[0],
+            options : arguments[arguments.length-1],
             args : arguments
           });
           return $delegate[method].apply($delegate, arguments);
