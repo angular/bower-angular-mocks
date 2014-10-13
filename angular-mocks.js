@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3419+sha.520db0c
+ * @license AngularJS v1.3.0-build.3420+sha.0f6aa10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1001,6 +1001,11 @@ angular.mock.dump = function(object) {
  * First we create the controller under test:
  *
   ```js
+  // The module code
+  angular
+    .module('MyApp', [])
+    .controller('MyController', MyController);
+
   // The controller code
   function MyController($scope, $http) {
     var authToken;
@@ -1029,6 +1034,9 @@ angular.mock.dump = function(object) {
     // testing controller
     describe('MyController', function() {
        var $httpBackend, $rootScope, createController, authRequestHandler;
+
+       // Set up the module
+       beforeEach(module('MyApp'));
 
        beforeEach(inject(function($injector) {
          // Set up the mock http service responses
