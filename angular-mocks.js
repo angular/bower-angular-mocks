@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3448+sha.1785251
+ * @license AngularJS v1.3.1-build.3449+sha.accb22d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -258,7 +258,7 @@ angular.mock.$ExceptionHandlerProvider = function() {
    *            {@link ngMock.$log#reset reset()}
    */
   this.mode = function(mode) {
-    switch(mode) {
+    switch (mode) {
       case 'rethrow':
         handler = function(e) {
           throw e;
@@ -520,7 +520,7 @@ angular.mock.$IntervalProvider = function() {
      * @returns {boolean} Returns `true` if the task was successfully cancelled.
      */
     $interval.cancel = function(promise) {
-      if(!promise) return false;
+      if (!promise) return false;
       var fnIndex;
 
       angular.forEach(repeatFns, function(fn, index) {
@@ -601,7 +601,7 @@ function padNumber(num, digits, trim) {
     num = -num;
   }
   num = '' + num;
-  while(num.length < digits) num = '0' + num;
+  while (num.length < digits) num = '0' + num;
   if (trim)
     num = num.substr(num.length - digits);
   return neg + num;
@@ -889,7 +889,7 @@ angular.mock.dump = function(object) {
       }
     }
     var child = scope.$$childHead;
-    while(child) {
+    while (child) {
       log.push(serializeScope(child, offset + '  '));
       child = child.$$nextSibling;
     }
@@ -1763,12 +1763,12 @@ angular.mock.$RAFDecorator = ['$delegate', function($delegate) {
   rafFn.supported = $delegate.supported;
 
   rafFn.flush = function() {
-    if(queue.length === 0) {
+    if (queue.length === 0) {
       throw new Error('No rAF callbacks present');
     }
 
     var length = queue.length;
-    for(var i=0;i<length;i++) {
+    for (var i=0;i<length;i++) {
       queue[i]();
     }
 
@@ -2036,7 +2036,7 @@ angular.mock.e2e.$httpBackendDecorator =
   ['$rootScope', '$delegate', '$browser', createHttpBackendMock];
 
 
-if(window.jasmine || window.mocha) {
+if (window.jasmine || window.mocha) {
 
   var currentSpec = null,
       isSpecRunning = function() {
@@ -2244,7 +2244,7 @@ if(window.jasmine || window.mocha) {
         injector = currentSpec.$injector = angular.injector(modules, strictDi);
         currentSpec.$injectorStrict = strictDi;
       }
-      for(var i = 0, ii = blockFns.length; i < ii; i++) {
+      for (var i = 0, ii = blockFns.length; i < ii; i++) {
         if (currentSpec.$injectorStrict) {
           // If the injector is strict / strictDi, and the spec wants to inject using automatic
           // annotation, then annotate the function here.
