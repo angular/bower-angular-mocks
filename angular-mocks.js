@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.5-build.3621+sha.41dc7d5
+ * @license AngularJS v1.3.5-build.3622+sha.08cd5c1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1149,7 +1149,7 @@ function createHttpBackendMock($rootScope, $delegate, $browser) {
     return function() {
       return angular.isNumber(status)
           ? [status, data, headers, statusText]
-          : [200, status, data];
+          : [200, status, data, headers];
     };
   }
 
