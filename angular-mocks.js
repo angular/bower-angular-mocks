@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.4.0-build.3785+sha.0504395
- * (c) 2010-2015 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.3.10-build.18+sha.3a799df
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular, undefined) {
@@ -581,20 +581,20 @@ function jsonStringToDate(string) {
         tzHour = 0,
         tzMin  = 0;
     if (match[9]) {
-      tzHour = toInt(match[9] + match[10]);
-      tzMin = toInt(match[9] + match[11]);
+      tzHour = int(match[9] + match[10]);
+      tzMin = int(match[9] + match[11]);
     }
-    date.setUTCFullYear(toInt(match[1]), toInt(match[2]) - 1, toInt(match[3]));
-    date.setUTCHours(toInt(match[4] || 0) - tzHour,
-                     toInt(match[5] || 0) - tzMin,
-                     toInt(match[6] || 0),
-                     toInt(match[7] || 0));
+    date.setUTCFullYear(int(match[1]), int(match[2]) - 1, int(match[3]));
+    date.setUTCHours(int(match[4] || 0) - tzHour,
+                     int(match[5] || 0) - tzMin,
+                     int(match[6] || 0),
+                     int(match[7] || 0));
     return date;
   }
   return string;
 }
 
-function toInt(str) {
+function int(str) {
   return parseInt(str, 10);
 }
 
