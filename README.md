@@ -14,10 +14,16 @@ You can install this package either with `npm` or with `bower`.
 npm install angular-mocks
 ```
 
-The mocks are then available at `node_modules/angular-mocks/angular-mocks.js`.
+You can `require` ngMock modules:
 
-Note that this package is not in CommonJS format, so doing `require('angular-mocks')` will
-return `undefined`.
+```js
+var angular = require('angular');
+angular.module('myMod', [
+  require('angular-animate'),
+  require('angular-mocks/ngMock')
+  require('angular-mocks/ngAnimateMock')
+]);
+```
 
 ### bower
 
