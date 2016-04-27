@@ -2909,7 +2909,9 @@ angular.mock.$RootScopeDecorator = ['$delegate', function($delegate) {
       if (rootNode && (!originalRootElement || rootNode !== originalRootElement[0])) {
         cleanUpNodes.push(rootNode);
       }
-      angular.element.cleanData(cleanUpNodes);
+
+      // Ensure `cleanData()` is available, before calling it      
+      if (angular.element && angular.element.cleanData) angular.element.cleanData(cleanUpNodes);
 
       // Ensure `$destroy()` is available, before calling it
       // (a mocked `$rootScope` might not implement it (or not even be an object at all))
