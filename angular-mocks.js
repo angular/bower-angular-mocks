@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8
+ * @license AngularJS v1.5.9-build.4953+sha.228754f
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -463,7 +463,7 @@ angular.mock.$IntervalProvider = function() {
           promise = deferred.promise;
 
       count = (angular.isDefined(count)) ? count : 0;
-      promise.then(null, null, (!hasParams) ? fn : function() {
+      promise.then(null, function() {}, (!hasParams) ? fn : function() {
         fn.apply(null, args);
       });
 
@@ -523,6 +523,7 @@ angular.mock.$IntervalProvider = function() {
       });
 
       if (angular.isDefined(fnIndex)) {
+        repeatFns[fnIndex].deferred.promise.then(undefined, function() {});
         repeatFns[fnIndex].deferred.reject('canceled');
         repeatFns.splice(fnIndex, 1);
         return true;
@@ -1426,7 +1427,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * Creates a new backend definition.
    *
    * @param {string} method HTTP method.
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string))=} data HTTP request body or function that receives
    *   data string and returns true if the data is as expected.
@@ -1448,6 +1449,9 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    *    the `requestHandler` object for possible overrides.
    */
   $httpBackend.when = function(method, url, data, headers, keys) {
+
+    assertArgDefined(arguments, 1, 'url');
+
     var definition = new MockHttpExpectation(method, url, data, headers, keys),
         chain = {
           respond: function(status, data, headers, statusText) {
@@ -1475,7 +1479,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for GET requests. For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(Object|function(Object))=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1490,7 +1494,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for HEAD requests. For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(Object|function(Object))=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1505,7 +1509,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for DELETE requests. For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(Object|function(Object))=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1520,7 +1524,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for POST requests. For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string))=} data HTTP request body or function that receives
    *   data string and returns true if the data is as expected.
@@ -1537,7 +1541,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for PUT requests.  For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string))=} data HTTP request body or function that receives
    *   data string and returns true if the data is as expected.
@@ -1554,7 +1558,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new backend definition for JSONP requests. For more info see `when()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
    * @returns {requestHandler} Returns an object with `respond` method that controls how a matched
@@ -1617,7 +1621,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * Creates a new request expectation.
    *
    * @param {string} method HTTP method.
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string)|Object)=} data HTTP request body or function that
    *  receives data string and returns true if the data is as expected, or Object if request body
@@ -1640,6 +1644,9 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    *    the `requestHandler` object for possible overrides.
    */
   $httpBackend.expect = function(method, url, data, headers, keys) {
+
+    assertArgDefined(arguments, 1, 'url');
+
     var expectation = new MockHttpExpectation(method, url, data, headers, keys),
         chain = {
           respond: function(status, data, headers, statusText) {
@@ -1658,7 +1665,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for GET requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {Object=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1673,7 +1680,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for HEAD requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {Object=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1688,7 +1695,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for DELETE requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {Object=} headers HTTP headers.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
@@ -1703,7 +1710,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for POST requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string)|Object)=} data HTTP request body or function that
    *  receives data string and returns true if the data is as expected, or Object if request body
@@ -1721,7 +1728,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for PUT requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string)|Object)=} data HTTP request body or function that
    *  receives data string and returns true if the data is as expected, or Object if request body
@@ -1739,7 +1746,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for PATCH requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
    *   and returns true if the url matches the current definition.
    * @param {(string|RegExp|function(string)|Object)=} data HTTP request body or function that
    *  receives data string and returns true if the data is as expected, or Object if request body
@@ -1757,7 +1764,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    * @description
    * Creates a new request expectation for JSONP requests. For more info see `expect()`.
    *
-   * @param {string|RegExp|function(string)} url HTTP url or function that receives an url
+   * @param {string|RegExp|function(string)=} url HTTP url or function that receives an url
    *   and returns true if the url matches the current definition.
    * @param {(Array)=} keys Array of keys to assign to regex matches in request url described above.
    * @returns {requestHandler} Returns an object with `respond` method that controls how a matched
@@ -1847,7 +1854,8 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
    *   afterEach($httpBackend.verifyNoOutstandingRequest);
    * ```
    */
-  $httpBackend.verifyNoOutstandingRequest = function() {
+  $httpBackend.verifyNoOutstandingRequest = function(digest) {
+    if (digest !== false) $rootScope.$digest();
     if (responses.length) {
       throw new Error('Unflushed requests: ' + responses.length);
     }
@@ -1873,17 +1881,34 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
   function createShortMethods(prefix) {
     angular.forEach(['GET', 'DELETE', 'JSONP', 'HEAD'], function(method) {
      $httpBackend[prefix + method] = function(url, headers, keys) {
+        assertArgDefined(arguments, 0, 'url');
+
+        // Change url to `null` if `undefined` to stop it throwing an exception further down
+        if (angular.isUndefined(url)) url = null;
+
        return $httpBackend[prefix](method, url, undefined, headers, keys);
      };
     });
 
     angular.forEach(['PUT', 'POST', 'PATCH'], function(method) {
       $httpBackend[prefix + method] = function(url, data, headers, keys) {
+        assertArgDefined(arguments, 0, 'url');
+
+        // Change url to `null` if `undefined` to stop it throwing an exception further down
+        if (angular.isUndefined(url)) url = null;
+
         return $httpBackend[prefix](method, url, data, headers, keys);
       };
     });
   }
 }
+
+function assertArgDefined(args, index, name) {
+  if (args.length > index && angular.isUndefined(args[index])) {
+    throw new Error("Undefined argument `" + name + "`; the argument is provided but not defined");
+  }
+}
+
 
 function MockHttpExpectation(method, url, data, headers, keys) {
 
@@ -2387,7 +2412,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  *       phones.push(phone);
  *       return [200, phone, {}];
  *     });
- *     $httpBackend.whenGET(/^\/templates\//).passThrough(); // Requests for templare are handled by the real server
+ *     $httpBackend.whenGET(/^\/templates\//).passThrough(); // Requests for templates are handled by the real server
  *     //...
  *   });
  * ```
@@ -2465,7 +2490,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * Creates a new backend definition.
  *
  * @param {string} method HTTP method.
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(string|RegExp)=} data HTTP request body.
  * @param {(Object|function(Object))=} headers HTTP headers or function that receives http header
@@ -2497,7 +2522,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for GET requests. For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(Object|function(Object))=} headers HTTP headers.
  * @param {(Array)=} keys Array of keys to assign to regex matches in request url described on
@@ -2514,7 +2539,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for HEAD requests. For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(Object|function(Object))=} headers HTTP headers.
  * @param {(Array)=} keys Array of keys to assign to regex matches in request url described on
@@ -2531,7 +2556,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for DELETE requests. For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(Object|function(Object))=} headers HTTP headers.
  * @param {(Array)=} keys Array of keys to assign to regex matches in request url described on
@@ -2548,7 +2573,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for POST requests. For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(string|RegExp)=} data HTTP request body.
  * @param {(Object|function(Object))=} headers HTTP headers.
@@ -2566,7 +2591,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for PUT requests.  For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(string|RegExp)=} data HTTP request body.
  * @param {(Object|function(Object))=} headers HTTP headers.
@@ -2584,7 +2609,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for PATCH requests.  For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(string|RegExp)=} data HTTP request body.
  * @param {(Object|function(Object))=} headers HTTP headers.
@@ -2602,7 +2627,7 @@ angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
  * @description
  * Creates a new backend definition for JSONP requests. For more info see `when()`.
  *
- * @param {string|RegExp|function(string)} url HTTP url or function that receives a url
+ * @param {string|RegExp|function(string)=} url HTTP url or function that receives a url
  *   and returns true if the url matches the current definition.
  * @param {(Array)=} keys Array of keys to assign to regex matches in request url described on
  *   {@link ngMock.$httpBackend $httpBackend mock}.
@@ -3121,6 +3146,220 @@ angular.mock.$RootScopeDecorator = ['$delegate', function($delegate) {
     };
   }
 })(window.jasmine || window.mocha);
+
+'use strict';
+
+(function() {
+  /**
+   * Triggers a browser event. Attempts to choose the right event if one is
+   * not specified.
+   *
+   * @param {Object} element Either a wrapped jQuery/jqLite node or a DOMElement
+   * @param {string} eventType Optional event type
+   * @param {Object=} eventData An optional object which contains additional event data (such as x,y
+   * coordinates, keys, etc...) that are passed into the event when triggered
+   */
+  window.browserTrigger = function browserTrigger(element, eventType, eventData) {
+    if (element && !element.nodeName) element = element[0];
+    if (!element) return;
+
+    eventData = eventData || {};
+    var relatedTarget = eventData.relatedTarget || element;
+    var keys = eventData.keys;
+    var x = eventData.x;
+    var y = eventData.y;
+
+    var inputType = (element.type) ? element.type.toLowerCase() : null,
+        nodeName = element.nodeName.toLowerCase();
+    if (!eventType) {
+      eventType = {
+        'text':            'change',
+        'textarea':        'change',
+        'hidden':          'change',
+        'password':        'change',
+        'button':          'click',
+        'submit':          'click',
+        'reset':           'click',
+        'image':           'click',
+        'checkbox':        'click',
+        'radio':           'click',
+        'select-one':      'change',
+        'select-multiple': 'change',
+        '_default_':       'click'
+      }[inputType || '_default_'];
+    }
+
+    if (nodeName === 'option') {
+      element.parentNode.value = element.value;
+      element = element.parentNode;
+      eventType = 'change';
+    }
+
+    keys = keys || [];
+    function pressed(key) {
+      return keys.indexOf(key) !== -1;
+    }
+
+    var evnt;
+    if (/transitionend/.test(eventType)) {
+      if (window.WebKitTransitionEvent) {
+        evnt = new WebKitTransitionEvent(eventType, eventData);
+        evnt.initEvent(eventType, false, true);
+      } else {
+        try {
+          evnt = new TransitionEvent(eventType, eventData);
+        }
+        catch (e) {
+          evnt = window.document.createEvent('TransitionEvent');
+          evnt.initTransitionEvent(eventType, null, null, null, eventData.elapsedTime || 0);
+        }
+      }
+    } else if (/animationend/.test(eventType)) {
+      if (window.WebKitAnimationEvent) {
+        evnt = new WebKitAnimationEvent(eventType, eventData);
+        evnt.initEvent(eventType, false, true);
+      } else {
+        try {
+          evnt = new AnimationEvent(eventType, eventData);
+        }
+        catch (e) {
+          evnt = window.document.createEvent('AnimationEvent');
+          evnt.initAnimationEvent(eventType, null, null, null, eventData.elapsedTime || 0);
+        }
+      }
+    } else if (/touch/.test(eventType) && supportsTouchEvents()) {
+      evnt = createTouchEvent(element, eventType, x, y);
+    } else if (/key/.test(eventType)) {
+      evnt = window.document.createEvent('Events');
+      evnt.initEvent(eventType, eventData.bubbles, eventData.cancelable);
+      evnt.view = window;
+      evnt.ctrlKey = pressed('ctrl');
+      evnt.altKey = pressed('alt');
+      evnt.shiftKey = pressed('shift');
+      evnt.metaKey = pressed('meta');
+      evnt.keyCode = eventData.keyCode;
+      evnt.charCode = eventData.charCode;
+      evnt.which = eventData.which;
+    } else {
+      evnt = window.document.createEvent('MouseEvents');
+      x = x || 0;
+      y = y || 0;
+      evnt.initMouseEvent(eventType, true, true, window, 0, x, y, x, y, pressed('ctrl'),
+          pressed('alt'), pressed('shift'), pressed('meta'), 0, relatedTarget);
+    }
+
+    /* we're unable to change the timeStamp value directly so this
+     * is only here to allow for testing where the timeStamp value is
+     * read */
+    evnt.$manualTimeStamp = eventData.timeStamp;
+
+    if (!evnt) return;
+
+    var originalPreventDefault = evnt.preventDefault,
+        appWindow = element.ownerDocument.defaultView,
+        fakeProcessDefault = true,
+        finalProcessDefault,
+        angular = appWindow.angular || {};
+
+    // igor: temporary fix for https://bugzilla.mozilla.org/show_bug.cgi?id=684208
+    angular['ff-684208-preventDefault'] = false;
+    evnt.preventDefault = function() {
+      fakeProcessDefault = false;
+      return originalPreventDefault.apply(evnt, arguments);
+    };
+
+    if (!eventData.bubbles || supportsEventBubblingInDetachedTree() || isAttachedToDocument(element)) {
+      element.dispatchEvent(evnt);
+    } else {
+      triggerForPath(element, evnt);
+    }
+
+    finalProcessDefault = !(angular['ff-684208-preventDefault'] || !fakeProcessDefault);
+
+    delete angular['ff-684208-preventDefault'];
+
+    return finalProcessDefault;
+  };
+
+  function supportsTouchEvents() {
+    if ('_cached' in supportsTouchEvents) {
+      return supportsTouchEvents._cached;
+    }
+    if (!window.document.createTouch || !window.document.createTouchList) {
+      supportsTouchEvents._cached = false;
+      return false;
+    }
+    try {
+      window.document.createEvent('TouchEvent');
+    } catch (e) {
+      supportsTouchEvents._cached = false;
+      return false;
+    }
+    supportsTouchEvents._cached = true;
+    return true;
+  }
+
+  function createTouchEvent(element, eventType, x, y) {
+    var evnt = new window.Event(eventType);
+    x = x || 0;
+    y = y || 0;
+
+    var touch = window.document.createTouch(window, element, Date.now(), x, y, x, y);
+    var touches = window.document.createTouchList(touch);
+
+    evnt.touches = touches;
+
+    return evnt;
+  }
+
+  function supportsEventBubblingInDetachedTree() {
+    if ('_cached' in supportsEventBubblingInDetachedTree) {
+      return supportsEventBubblingInDetachedTree._cached;
+    }
+    supportsEventBubblingInDetachedTree._cached = false;
+    var doc = window.document;
+    if (doc) {
+      var parent = doc.createElement('div'),
+          child = parent.cloneNode();
+      parent.appendChild(child);
+      parent.addEventListener('e', function() {
+        supportsEventBubblingInDetachedTree._cached = true;
+      });
+      var evnt = window.document.createEvent('Events');
+      evnt.initEvent('e', true, true);
+      child.dispatchEvent(evnt);
+    }
+    return supportsEventBubblingInDetachedTree._cached;
+  }
+
+  function triggerForPath(element, evnt) {
+    var stop = false;
+
+    var _stopPropagation = evnt.stopPropagation;
+    evnt.stopPropagation = function() {
+      stop = true;
+      _stopPropagation.apply(evnt, arguments);
+    };
+    patchEventTargetForBubbling(evnt, element);
+    do {
+      element.dispatchEvent(evnt);
+    } while (!stop && (element = element.parentNode));
+  }
+
+  function patchEventTargetForBubbling(event, target) {
+    event._target = target;
+    Object.defineProperty(event, "target", {get: function() { return this._target;}});
+  }
+
+  function isAttachedToDocument(element) {
+    while (element = element.parentNode) {
+        if (element === window) {
+            return true;
+        }
+    }
+    return false;
+  }
+}());
 
 
 })(window, window.angular);
