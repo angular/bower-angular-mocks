@@ -1,6 +1,6 @@
 {
   "name": "angular-mocks",
-  "version": "1.6.2-build.5252+sha.7019d9f",
+  "version": "1.6.2-build.5253+sha.fd4f011",
   "description": "AngularJS mocks for testing",
   "main": "angular-mocks.js",
   "scripts": {
