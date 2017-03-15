@@ -2748,6 +2748,7 @@ angular.mock.$RootScopeDecorator = ['$delegate', function($delegate) {
   };
 
   module.$$cleanup = function() {
+    if (!currentSpec) return;
     var injector = currentSpec.$injector;
 
     annotatedFunctions.forEach(function(fn) {
