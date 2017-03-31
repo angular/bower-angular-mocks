@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5351+sha.617b361
+ * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -797,7 +797,7 @@ angular.mock.TzDate.prototype = Date.prototype;
  * You need to require the `ngAnimateMock` module in your test suite for instance `beforeEach(module('ngAnimateMock'))`
  */
 angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
-  .info({ angularVersion: '1.6.4-build.5351+sha.617b361' })
+  .info({ angularVersion: '1.6.4' })
 
   .config(['$provide', function($provide) {
 
@@ -963,7 +963,7 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
  *
  * *NOTE*: This is not an injectable instance, just a globally available function.
  *
- * Method for serializing common AngularJS objects (scope, elements, etc..) into strings.
+ * Method for serializing common angular objects (scope, elements, etc..) into strings.
  * It is useful for logging objects to the console when debugging.
  *
  * @param {*} object - any object to turn into string.
@@ -1045,7 +1045,7 @@ angular.mock.dump = function(object) {
  * This mock implementation can be used to respond with static or dynamic responses via the
  * `expect` and `when` apis and their shortcuts (`expectGET`, `whenPOST`, etc).
  *
- * When an AngularJS application needs some data from a server, it calls the $http service, which
+ * When an Angular application needs some data from a server, it calls the $http service, which
  * sends the request to a real server using $httpBackend service. With dependency injection, it is
  * easy to inject $httpBackend mock (which has the same API as $httpBackend) and use it to verify
  * the requests and respond with some testing data without sending a request to a real server.
@@ -2082,13 +2082,13 @@ function MockXhr() {
     var header = this.$$respHeaders[name];
     if (header) return header;
 
-    name = angular.$$lowercase(name);
+    name = angular.lowercase(name);
     header = this.$$respHeaders[name];
     if (header) return header;
 
     header = undefined;
     angular.forEach(this.$$respHeaders, function(headerVal, headerName) {
-      if (!header && angular.$$lowercase(headerName) === name) header = headerVal;
+      if (!header && angular.lowercase(headerName) === name) header = headerVal;
     });
     return header;
   };
@@ -2105,7 +2105,7 @@ function MockXhr() {
   this.abort = angular.noop;
 
   // This section simulates the events on a real XHR object (and the upload object)
-  // When we are testing $httpBackend (inside the AngularJS project) we make partial use of this
+  // When we are testing $httpBackend (inside the angular project) we make partial use of this
   // but store the events directly ourselves on `$$events`, instead of going through the `addEventListener`
   this.$$events = {};
   this.addEventListener = function(name, listener) {
@@ -2216,6 +2216,11 @@ angular.mock.$RootElementProvider = function() {
  * A decorator for {@link ng.$controller} with additional `bindings` parameter, useful when testing
  * controllers of directives that use {@link $compile#-bindtocontroller- `bindToController`}.
  *
+ * Depending on the value of
+ * {@link ng.$compileProvider#preAssignBindingsEnabled `preAssignBindingsEnabled()`}, the properties
+ * will be bound before or after invoking the constructor.
+ *
+ *
  * ## Example
  *
  * ```js
@@ -2261,6 +2266,8 @@ angular.mock.$RootElementProvider = function() {
  *
  *    * check if a controller with given name is registered via `$controllerProvider`
  *    * check if evaluating the string on the current scope returns a constructor
+ *    * if $controllerProvider#allowGlobals, check `window[constructor]` on the global
+ *      `window` object (deprecated, not recommended)
  *
  *    The string can use the `controller as property` syntax, where the controller instance is published
  *    as the specified property on the `scope`; the `scope` must be injected into `locals` param for this
@@ -2271,13 +2278,22 @@ angular.mock.$RootElementProvider = function() {
  *                           the `bindToController` feature and simplify certain kinds of tests.
  * @return {Object} Instance of given controller.
  */
-function createControllerDecorator() {
+function createControllerDecorator(compileProvider) {
   angular.mock.$ControllerDecorator = ['$delegate', function($delegate) {
     return function(expression, locals, later, ident) {
       if (later && typeof later === 'object') {
+        var preAssignBindingsEnabled = compileProvider.preAssignBindingsEnabled();
+
         var instantiate = $delegate(expression, locals, true, ident);
+        if (preAssignBindingsEnabled) {
+          angular.extend(instantiate.instance, later);
+        }
+
         var instance = instantiate();
-        angular.extend(instance, later);
+        if (!preAssignBindingsEnabled || instance !== instantiate.instance) {
+          angular.extend(instance, later);
+        }
+
         return instance;
       }
       return $delegate(expression, locals, later, ident);
@@ -2350,8 +2366,8 @@ angular.mock.$ComponentControllerProvider = ['$compileProvider',
  *
  * # ngMock
  *
- * The `ngMock` module provides support to inject and mock AngularJS services into unit tests.
- * In addition, ngMock also extends various core AngularJS services such that they can be
+ * The `ngMock` module provides support to inject and mock Angular services into unit tests.
+ * In addition, ngMock also extends various core ng services such that they can be
  * inspected and controlled in a synchronous manner within test code.
  *
  *
@@ -2400,7 +2416,7 @@ angular.module('ngMock', ['ng']).provider({
   $provide.decorator('$rootScope', angular.mock.$RootScopeDecorator);
   $provide.decorator('$controller', createControllerDecorator($compileProvider));
   $provide.decorator('$httpBackend', angular.mock.$httpBackendDecorator);
-}]).info({ angularVersion: '1.6.4-build.5351+sha.617b361' });
+}]).info({ angularVersion: '1.6.4' });
 
 /**
  * @ngdoc module
@@ -2409,13 +2425,13 @@ angular.module('ngMock', ['ng']).provider({
  * @packageName angular-mocks
  * @description
  *
- * The `ngMockE2E` is an AngularJS module which contains mocks suitable for end-to-end testing.
+ * The `ngMockE2E` is an angular module which contains mocks suitable for end-to-end testing.
  * Currently there is only one mock present in this module -
  * the {@link ngMockE2E.$httpBackend e2e $httpBackend} mock.
  */
 angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
   $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
-}]).info({ angularVersion: '1.6.4-build.5351+sha.617b361' });
+}]).info({ angularVersion: '1.6.4' });
 
 /**
  * @ngdoc service
