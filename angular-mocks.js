@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.9-build.5550+sha.16b82c6
+ * @license AngularJS v1.6.9
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -803,7 +803,7 @@ angular.mock.TzDate.prototype = Date.prototype;
  * You need to require the `ngAnimateMock` module in your test suite for instance `beforeEach(module('ngAnimateMock'))`
  */
 angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
-  .info({ angularVersion: '1.6.9-build.5550+sha.16b82c6' })
+  .info({ angularVersion: '1.6.9' })
 
   .config(['$provide', function($provide) {
 
@@ -2097,13 +2097,13 @@ function MockXhr() {
     var header = this.$$respHeaders[name];
     if (header) return header;
 
-    name = angular.$$lowercase(name);
+    name = angular.lowercase(name);
     header = this.$$respHeaders[name];
     if (header) return header;
 
     header = undefined;
     angular.forEach(this.$$respHeaders, function(headerVal, headerName) {
-      if (!header && angular.$$lowercase(headerName) === name) header = headerVal;
+      if (!header && angular.lowercase(headerName) === name) header = headerVal;
     });
     return header;
   };
@@ -2231,6 +2231,11 @@ angular.mock.$RootElementProvider = function() {
  * A decorator for {@link ng.$controller} with additional `bindings` parameter, useful when testing
  * controllers of directives that use {@link $compile#-bindtocontroller- `bindToController`}.
  *
+ * Depending on the value of
+ * {@link ng.$compileProvider#preAssignBindingsEnabled `preAssignBindingsEnabled()`}, the properties
+ * will be bound before or after invoking the constructor.
+ *
+ *
  * ## Example
  *
  * ```js
@@ -2276,6 +2281,8 @@ angular.mock.$RootElementProvider = function() {
  *
  *    * check if a controller with given name is registered via `$controllerProvider`
  *    * check if evaluating the string on the current scope returns a constructor
+ *    * if $controllerProvider#allowGlobals, check `window[constructor]` on the global
+ *      `window` object (deprecated, not recommended)
  *
  *    The string can use the `controller as property` syntax, where the controller instance is published
  *    as the specified property on the `scope`; the `scope` must be injected into `locals` param for this
@@ -2286,13 +2293,22 @@ angular.mock.$RootElementProvider = function() {
  *                           the `bindToController` feature and simplify certain kinds of tests.
  * @return {Object} Instance of given controller.
  */
-function createControllerDecorator() {
+function createControllerDecorator(compileProvider) {
   angular.mock.$ControllerDecorator = ['$delegate', function($delegate) {
     return function(expression, locals, later, ident) {
       if (later && typeof later === 'object') {
+        var preAssignBindingsEnabled = compileProvider.preAssignBindingsEnabled();
+
         var instantiate = $delegate(expression, locals, true, ident);
+        if (preAssignBindingsEnabled) {
+          angular.extend(instantiate.instance, later);
+        }
+
         var instance = instantiate();
-        angular.extend(instance, later);
+        if (!preAssignBindingsEnabled || instance !== instantiate.instance) {
+          angular.extend(instance, later);
+        }
+
         return instance;
       }
       return $delegate(expression, locals, later, ident);
@@ -2410,7 +2426,7 @@ angular.module('ngMock', ['ng']).provider({
   $provide.decorator('$rootScope', angular.mock.$RootScopeDecorator);
   $provide.decorator('$controller', createControllerDecorator($compileProvider));
   $provide.decorator('$httpBackend', angular.mock.$httpBackendDecorator);
-}]).info({ angularVersion: '1.6.9-build.5550+sha.16b82c6' });
+}]).info({ angularVersion: '1.6.9' });
 
 /**
  * @ngdoc module
@@ -2425,7 +2441,7 @@ angular.module('ngMock', ['ng']).provider({
  */
 angular.module('ngMockE2E', ['ng']).config(['$provide', function($provide) {
   $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
-}]).info({ angularVersion: '1.6.9-build.5550+sha.16b82c6' });
+}]).info({ angularVersion: '1.6.9' });
 
 /**
  * @ngdoc service
@@ -3352,11 +3368,30 @@ angular.mock.$RootScopeDecorator = ['$delegate', function($delegate) {
 
     if (!evnt) return;
 
+    var originalPreventDefault = evnt.preventDefault,
+        appWindow = element.ownerDocument.defaultView,
+        fakeProcessDefault = true,
+        finalProcessDefault,
+        angular = appWindow.angular || {};
+
+    // igor: temporary fix for https://bugzilla.mozilla.org/show_bug.cgi?id=684208
+    angular['ff-684208-preventDefault'] = false;
+    evnt.preventDefault = function() {
+      fakeProcessDefault = false;
+      return originalPreventDefault.apply(evnt, arguments);
+    };
+
     if (!eventData.bubbles || supportsEventBubblingInDetachedTree() || isAttachedToDocument(element)) {
-      return element.dispatchEvent(evnt);
+      element.dispatchEvent(evnt);
     } else {
       triggerForPath(element, evnt);
     }
+
+    finalProcessDefault = !(angular['ff-684208-preventDefault'] || !fakeProcessDefault);
+
+    delete angular['ff-684208-preventDefault'];
+
+    return finalProcessDefault;
   };
 
   function supportsTouchEvents() {
